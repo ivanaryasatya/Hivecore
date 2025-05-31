@@ -1,6 +1,6 @@
 {
   "file_format": "lamp_controller",
-  
+
   "lamp_controller": {
     "controller_1": {
       "actions": [
@@ -22,7 +22,7 @@
       "repeat": "infinite"
     }
   },
-  
+
 
   "lamp": {
     "1": {
@@ -38,7 +38,7 @@
       "mode": "manual",
       "time_on": "19:00",
       "time_off": "04:30",
-      "schedule": ["mon-fri"],
+      "schedule": ["mon", "fri"],
       "controller": ""
     },
     "3": {
@@ -46,7 +46,7 @@
       "mode": "manual",
       "time_on": "20:00",
       "time_off": "06:00",
-      "schedule": ["sat-sun"],
+      "schedule": ["sat", "sun"],
       "controller": "controller_1"
     },
     "4": {
@@ -54,7 +54,7 @@
       "mode": "manual",
       "time_on": "20:00",
       "time_off": "06:00",
-      "schedule": ["2025-12-30"],
+      "schedule": ["T2025-12-30", "T2025-12-31"],
       "controller": "controller_1"
     }
   }
