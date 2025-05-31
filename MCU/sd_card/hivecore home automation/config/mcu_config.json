@@ -4,7 +4,6 @@
   "last_interaction": "2025-04-02T14:30:00",
   "last_boot": "2025-04-02T08:15:00",
   "sleep_mode_time": "23:00-06:00",
-  "time_format": "iso",
   "bluetooth_mode": 0,
   "emergency_mode": false,
   "auto_restart": true,
@@ -19,12 +18,12 @@
     "password": "passsss",
     "connected": true
   },
-  
+
   "radio": {
     "write": true,
     "read": true
   },
-  
+
   "bluetooth": {
     "name": "Home Automation",
     "write": true,
