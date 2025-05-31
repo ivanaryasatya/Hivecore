@@ -4,13 +4,16 @@
   "lamp_controller": {
     "controller_1": {
       "actions": [
-        { "action": "on", "duration": 1000 }
+        { "action": "on"}
       ],
       "repeat": 1
     },
     "controller_2": {
       "actions": [
         { "action": "on", "duration": 1000 }
+        { "action": "off"},
+        { "action": "on", "duration": 1000 }
+        { "action": "off"}
       ],
       "repeat": 1
     },
@@ -24,38 +27,38 @@
   },
 
 
-  "lamp": {
-    "1": {
+  "lamps": {
+    "lamp_1": {
       "status": "on",
       "mode": "auto",
       "time_on": "18:30",
       "time_off": "05:00",
       "schedule": ["daily"],
-      "controller": ""
+      "on_controller": ""
     },
-    "2": {
+    "lamp_2": {
       "status": "off",
       "mode": "manual",
       "time_on": "19:00",
       "time_off": "04:30",
       "schedule": ["mon", "fri"],
-      "controller": ""
+      "on_controller": ""
     },
-    "3": {
+    "lamp_3": {
       "status": "on",
       "mode": "manual",
       "time_on": "20:00",
       "time_off": "06:00",
       "schedule": ["sat", "sun"],
-      "controller": "controller_1"
+      "on_controller": "controller_1"
     },
-    "4": {
+    "lamp_4": {
       "status": "on",
       "mode": "manual",
       "time_on": "20:00",
       "time_off": "06:00",
       "schedule": ["T2025-12-30", "T2025-12-31"],
-      "controller": "controller_1"
+      "on_controller": "controller_1"
     }
   }
 }
