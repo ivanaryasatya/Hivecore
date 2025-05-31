@@ -1,0 +1,42 @@
+{
+  "version": "1.0.0",
+  "firebase_app_password": "FirebasePass456",
+  "last_interaction": "2025-04-02T14:30:00",
+  "last_boot": "2025-04-02T08:15:00",
+  "sleep_mode_time": "23:00-06:00",
+  "time_format": "iso",
+  "bluetooth_mode": 0,
+  "emergency_mode": false,
+  "auto_restart": true,
+  "auto_mode": true,
+  "sleep_mode": false,
+  "boot_count": 42,
+  "sleep_duration": 300,
+  "device_count": 5,
+
+  "wifi": {
+    "ssid": "MyWiFiNetwork",
+    "password": "passsss",
+    "connected": true
+  },
+  
+  "radio": {
+    "write": true,
+    "read": true
+  },
+  
+  "bluetooth": {
+    "name": "Home Automation",
+    "write": true,
+    "read": true
+  },
+
+  "sdcard": {
+    "write": true,
+    "inserted": true,
+    "auto_delete": true,
+    "write_activity": true,
+    "write_log": true,
+    "capacity": 8192
+  }
+}

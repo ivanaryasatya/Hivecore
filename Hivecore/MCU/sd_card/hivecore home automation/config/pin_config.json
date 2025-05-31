@@ -1,0 +1,25 @@
+{
+  "rf24": {
+    "ce_pin": 9,
+    "csn_pin": 10,
+    "spi_sck": 18,
+    "spi_mosi": 23,
+    "spi_miso": 19
+  },
+  "expander_1": {
+    "address": "0x20",
+    "interrupt_pin": 2
+  },
+  "expander_2": {
+    "address": "0x21",
+    "interrupt_pin": 3
+  },
+  "dht11": {
+    "data_pin": 5
+  },
+  "adxl345": {
+    "address": "0x68",
+    "sda_pin": 21,
+    "scl_pin": 22
+  }
+}

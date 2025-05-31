@@ -1,0 +1,7 @@
+{
+  "firebase_enable": true,
+  "api_key": "YOUR_API_KEY",
+  "database_url": "https://YOUR_PROJECT_ID.firebaseio.com",
+  "project_id": "YOUR_PROJECT_ID",
+  "private_key": "YOUR_PRIVATE_KEY"
+}

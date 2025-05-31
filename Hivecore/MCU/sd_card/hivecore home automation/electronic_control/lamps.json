@@ -1,0 +1,61 @@
+{
+  "file_format": "lamp_controller",
+  
+  "lamp_controller": {
+    "controller_1": {
+      "actions": [
+        { "action": "on", "duration": 1000 }
+      ],
+      "repeat": 1
+    },
+    "controller_2": {
+      "actions": [
+        { "action": "on", "duration": 1000 }
+      ],
+      "repeat": 1
+    },
+    "controller_3": {
+      "actions": [
+        { "action": "on", "duration": 500 },
+        { "action": "off", "duration": 2000 }
+      ],
+      "repeat": "infinite"
+    }
+  },
+  
+
+  "lamp": {
+    "1": {
+      "status": "on",
+      "mode": "auto",
+      "time_on": "18:30",
+      "time_off": "05:00",
+      "schedule": ["daily"],
+      "controller": ""
+    },
+    "2": {
+      "status": "off",
+      "mode": "manual",
+      "time_on": "19:00",
+      "time_off": "04:30",
+      "schedule": ["mon-fri"],
+      "controller": ""
+    },
+    "3": {
+      "status": "on",
+      "mode": "manual",
+      "time_on": "20:00",
+      "time_off": "06:00",
+      "schedule": ["sat-sun"],
+      "controller": "controller_1"
+    },
+    "4": {
+      "status": "on",
+      "mode": "manual",
+      "time_on": "20:00",
+      "time_off": "06:00",
+      "schedule": ["2025-12-30"],
+      "controller": "controller_1"
+    }
+  }
+}

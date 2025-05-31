@@ -1,0 +1,7 @@
+{
+  "keypad_read_interval": 500,
+  "firebase_update": 5000,
+  "temp_update": 3000,
+  "voltage_sensor_update": 3000,
+  "led_indicator": [true, true, true, true, true, true, true, true]
+}

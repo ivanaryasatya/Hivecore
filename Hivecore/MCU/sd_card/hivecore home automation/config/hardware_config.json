@@ -1,0 +1,91 @@
+{
+  "hardware_1": {
+    "name": "DHT11",
+    "io_type": 0,
+    "unit": 2,
+    "read_interval": 2000,
+    "min_temp": 0,
+    "max_temp": 50,
+    "data_pin": {
+      "input": [5],
+      "output": []
+    }
+  },
+  "hardware_2": {
+    "name": "ADXL345",
+    "io_type": 0,
+    "sampling_rate_hz": 100,
+    "filter_enabled": true,
+    "read_interval_normal": 1000,
+    "read_interval_fast": 100,
+    "normal_threshold": 0.2,
+    "earth_quake_threshold": 0.3,
+    "data_pin": {
+      "input": [5, 6, 2],
+      "output": [10]
+    }
+  },
+  "hardware_3": {
+    "name": "Keypad_4x4",
+    "io_type": 0,
+    "keypad_type": "4x4",
+    "data_logging": true,
+    "rows": [2, 3, 4, 5],
+    "cols": [6, 7, 8, 9],
+    "key_map": [
+      ["1", "2", "3", "A"],
+      ["4", "5", "6", "B"],
+      ["7", "8", "9", "C"],
+      ["*", "0", "#", "D"]
+    ],
+    "debounce_time": 50,
+    "read_interval": 100,
+    "wakeup_time": 3000,
+    "active_time": 10000,
+    "button": {
+      "btn_1": true,
+      "btn_2": true,
+      "btn_3": true,
+      "btn_4": true,
+      "btn_5": true,
+      "btn_6": true,
+      "btn_7": true,
+      "btn_8": true,
+      "btn_9": true,
+      "btn_10": true,
+      "btn_11": true,
+      "btn_12": true,
+      "btn_13": true,
+      "btn_14": true,
+      "btn_15": true,
+      "btn_16": true
+    },
+    "data_pin": {
+      "input": [6, 7, 8, 9],
+      "output": [2, 3, 4, 5]
+    }
+  },
+  "hardware_4": {
+    "name": "SSD1306_OLED",
+    "io_type": 1,
+    "resolution": {
+      "width": 128,
+      "height": 64
+    },
+    "i2c_address": "0x3C",
+    "init_delay": 100,
+    "refresh_interval": 500,
+    "data_pin": {
+      "input": [],
+      "output": [21, 22]
+    }
+  },
+  "hardware_5": {
+    "name": "NRF24L01",
+    "io_type": 2,
+    "data_pin": {
+      "input": [],
+      "output": [9, 10, 11, 12, 13] 
+    }
+  }
+}
