@@ -10,9 +10,9 @@
     },
     "controller_2": {
       "actions": [
-        { "action": "on", "duration": 1000 }
+        { "action": "on", "duration": 1000 },
         { "action": "off"},
-        { "action": "on", "duration": 1000 }
+        { "action": "on", "duration": 1000 },
         { "action": "off"}
       ],
       "repeat": 1
