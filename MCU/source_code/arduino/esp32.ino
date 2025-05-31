@@ -11,7 +11,7 @@
 
 // Define the Firebase project credentials
 #define API_KEY "YOUR_FIREBASE_API_KEY"
-#define DATABASE_URL "YOUR_DATABASE_URL" //<databaseName>.firebaseio.com or <databaseName>.<region>.firebasedatabase.app
+#define DATABASE_URL "YOUR_DATABASE_URL"
 
 // Define the user Email and password that are already registered or added in your project
 #define USER_EMAIL "YOUR_USER_EMAIL"
@@ -24,7 +24,7 @@ FirebaseConfig config;
 
 void setup() {
     Serial.begin(115200);
-    
+
     // Connect to WiFi
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
     while (WiFi.status() != WL_CONNECTED) {
@@ -33,7 +33,6 @@ void setup() {
     }
     Serial.println("Connected to WiFi");
 
-    // Assign API key and database URL to Firebase config
     config.api_key = API_KEY;
     config.database_url = DATABASE_URL;
 
@@ -61,6 +60,5 @@ void setup() {
 }
 
 void loop() {
-    // Add any repeating tasks if necessary
 }
 
