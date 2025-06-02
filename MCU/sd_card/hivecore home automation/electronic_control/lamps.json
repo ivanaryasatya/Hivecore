@@ -22,7 +22,7 @@
         { "action": "on", "duration": 500 },
         { "action": "off", "duration": 2000 }
       ],
-      "repeat": "infinite"
+      "repeat": 0
     }
   },
 
