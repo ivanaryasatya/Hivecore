@@ -1,6 +1,6 @@
 {
-  "DT0": {
-    "name": "Gate Opener",
+  "Gate Opener": {
+    "device_id": 2000,
     "support_wifi": true,
     "firebase_connected": true,
     "io_type": 2,
@@ -31,8 +31,7 @@
       "reset": "RST"
     }
   },
-  "DT1": {
-    "name": "Feeder Controller",
+  "Feeder Controller": {
     "support_wifi": false,
     "firebase_connected": false,
     "io_type": 2,
@@ -54,8 +53,7 @@
     },
     "command_map": {}
   },
-  "DO2": {
-    "name": "Light Switch Module",
+  "Light Switch Module": {
     "support_wifi": false,
     "firebase_connected": false,
     "io_type": 1,
@@ -84,8 +82,7 @@
       "reset": "RST"
     }
   },
-  "DO3": {
-    "name": "Water Pump Controller",
+  "Water Pump Controller": {
     "active": true,
     "support_wifi": false,
     "firebase_connected": false,
@@ -103,8 +100,7 @@
     },
     "command_map": {}
   },
-  "DO4": {
-    "name": "Fan Controller",
+  "Fan Controller": {
     "active": true,
     "support_wifi": true,
     "firebase_connected": true,
@@ -122,8 +118,7 @@
     },
     "command_map": {}
   },
-  "DI5": {
-    "name": "Soil Sensor",
+  "Soil Sensor": {
     "active": false,
     "support_wifi": true,
     "firebase_connected": false,

@@ -13,7 +13,7 @@ class DataInputPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            TextField(
+            const TextField(
               style: TextStyle(color: Colors.white),
               cursorColor: Color.fromARGB(255, 255, 255, 255),
               decoration: InputDecoration(
@@ -29,7 +29,7 @@ class DataInputPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16),
-            TextField(
+            const TextField(
               style: TextStyle(color: Colors.white),
               cursorColor: Color.fromARGB(255, 255, 255, 255),
               decoration: InputDecoration(
@@ -46,7 +46,7 @@ class DataInputPage extends StatelessWidget {
               keyboardType: TextInputType.emailAddress,
             ),
             SizedBox(height: 16),
-            TextField(
+            const TextField(
               style: TextStyle(color: Colors.white),
               cursorColor: Color.fromARGB(255, 255, 255, 255),
               decoration: InputDecoration(
