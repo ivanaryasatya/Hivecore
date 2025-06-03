@@ -1,19 +1,25 @@
 {
-  "device_1": {
+  "DT0": {
     "name": "Gate Opener",
-    "active": true,
     "support_wifi": true,
     "firebase_connected": true,
-    "radio_comm": true,
-    "io_type": 1,
+    "io_type": 2,
+    "status": {
+      "active": true,
+      "open": false,
+      "locked": true,
+      "in_error": false
+    },
     "radio": {
-      "address": "NODE1",
+      "radio_comm": true,
+      "address": "DT0",
       "ack": true,
       "ack_retries": 3,
       "ack delay": 500,
       "data_rate": 2,
       "channel": 100,
-      "power_level": 3
+      "power_level": 3,
+      "rolling_code": true
     },
     "command_map": {
       "open_gate": "OPN",
@@ -25,39 +31,49 @@
       "reset": "RST"
     }
   },
-  "device_2": {
+  "DT1": {
     "name": "Feeder Controller",
-    "active": true,
     "support_wifi": false,
     "firebase_connected": false,
-    "radio_comm": true,
     "io_type": 2,
+    "status": {
+      "active": true,
+      "feeding": false,
+      "in_error": false
+    },
     "radio": {
+      "radio_comm": true,
       "address": "NODE1",
       "ack": true,
       "ack_retries": 3,
       "ack delay": 500,
       "data_rate": 2,
       "channel": 100,
-      "power_level": 3
+      "power_level": 3,
+      "rolling_code": true
     },
     "command_map": {}
   },
-  "device_3": {
+  "DO2": {
     "name": "Light Switch Module",
-    "active": false,
     "support_wifi": false,
     "firebase_connected": false,
-    "radio_comm": true,
     "io_type": 1,
+    "status": {
+      "active": true,
+      "on": false,
+      "in_error": false
+    },
     "radio": {
+      "radio_comm": true,
       "address": "NODE2",
       "ack": false,
       "ack_retries": 0,
       "ack delay": 300,
       "data_rate": 1,
       "channel": 100,
-      "power_level": 2
+      "power_level": 2,
+      "rolling_code": true
     },
     "command_map": {
       "turn_on": "ON",
@@ -68,57 +84,60 @@
       "reset": "RST"
     }
   },
-  "device_4": {
+  "DO3": {
     "name": "Water Pump Controller",
     "active": true,
     "support_wifi": false,
     "firebase_connected": false,
-    "radio_comm": true,
     "io_type": 1,
     "radio": {
+      "radio_comm": true,
       "address": "NODE3",
       "ack": true,
       "ack_retries": 5,
       "ack delay": 600,
       "data_rate": 0,
       "channel": 100,
-      "power_level": 1
+      "power_level": 1,
+      "rolling_code": true
     },
     "command_map": {}
   },
-  "device_5": {
+  "DO4": {
     "name": "Fan Controller",
     "active": true,
     "support_wifi": true,
     "firebase_connected": true,
-    "radio_comm": true,
     "io_type": 1,
     "radio": {
+      "radio_comm": true,
       "address": "NODE4",
       "ack": true,
       "ack_retries": 2,
       "ack delay": 400,
       "data_rate": 2,
       "channel": 100,
-      "power_level": 2
+      "power_level": 2,
+      "rolling_code": true
     },
     "command_map": {}
   },
-  "device_6": {
-    "name": "Soil Sensor Node",
+  "DI5": {
+    "name": "Soil Sensor",
     "active": false,
     "support_wifi": true,
     "firebase_connected": false,
-    "radio_comm": true,
     "io_type": 0,
     "radio": {
+      "radio_comm": true,
       "address": "NODE5",
       "ack": false,
       "ack_retries": 0,
       "ack delay": 200,
       "data_rate": 1,
       "channel": 100,
-      "power_level": 3
+      "power_level": 3,
+      "rolling_code": true
     },
     "command_map": {}
   }
