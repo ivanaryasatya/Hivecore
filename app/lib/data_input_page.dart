@@ -4,9 +4,9 @@ class DataInputPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 23, 42, 66),
+      backgroundColor: const Color.fromARGB(255, 23, 42, 66),
       appBar: AppBar(
-        title: Text('Data Input Page'),
+        title: const Text('Data Input Page'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -28,7 +28,7 @@ class DataInputPage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             const TextField(
               style: TextStyle(color: Colors.white),
               cursorColor: Color.fromARGB(255, 255, 255, 255),
@@ -45,7 +45,7 @@ class DataInputPage extends StatelessWidget {
               ),
               keyboardType: TextInputType.emailAddress,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             const TextField(
               style: TextStyle(color: Colors.white),
               cursorColor: Color.fromARGB(255, 255, 255, 255),
@@ -62,16 +62,16 @@ class DataInputPage extends StatelessWidget {
               ),
               keyboardType: TextInputType.phone,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
 
                 // Handle form submission
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Form Submitted')),
+                  const SnackBar(content: Text('Form Submitted')),
                 );
               },
-              child: Text('Submit'),
+              child: const Text('Submit'),
             ),
           ],
         ),
