@@ -16,7 +16,14 @@
   "wifi": {
     "ssid": "MyWiFiNetwork",
     "password": "passsss",
-    "connected": true
+    "mode": 0,
+    "ip_address": "",
+    "is_connected": true,
+    "allow_wifi": true,
+    "local_ip": "",
+    "RSSI": 75,
+    "mac_address": "00:1A:2B:3C:4D:5E",
+    "auto_reconect": true
   },
 
   "radio": {
@@ -27,15 +34,19 @@
   "bluetooth": {
     "name": "Home Automation",
     "write": true,
-    "read": true
+    "read": true,
+    "is_connected": true
   },
 
   "sdcard": {
     "write": true,
-    "inserted": true,
+    "mounted": true,
     "auto_delete": true,
     "write_activity": true,
     "write_log": true,
-    "capacity": 8192
+    "max_capacity": 8192,
+    "used_space": 2048,
+    "free_space": 6144,
+    "used_limit": 1024
   }
 }
