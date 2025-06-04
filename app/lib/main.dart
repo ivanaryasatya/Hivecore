@@ -11,7 +11,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp( 
+    return MaterialApp(
       title: 'Belajar Flutter',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => HomePage(),
         '/profile': (context) => ProfilePage(),
         '/form': (context) => FormPage(),
-        '/data_input': (context) => DataInputPage(),
+        '/data_input': (context) => DataInputPage()
       },
     );
   }
