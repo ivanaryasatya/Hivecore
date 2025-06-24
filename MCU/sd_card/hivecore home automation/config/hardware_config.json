@@ -1,5 +1,5 @@
-{
-  "hardware_1": {
+[
+  {
     "name": "DHT11",
     "io_type": 0,
     "unit": 2,
@@ -11,7 +11,7 @@
       "output": []
     }
   },
-  "hardware_2": {
+  {
     "name": "ADXL345",
     "io_type": 0,
     "sampling_rate_hz": 100,
@@ -25,7 +25,7 @@
       "output": [10]
     }
   },
-  "hardware_3": {
+  {
     "name": "Keypad_4x4",
     "io_type": 0,
     "keypad_type": "4x4",
@@ -65,7 +65,7 @@
       "output": [2, 3, 4, 5]
     }
   },
-  "hardware_4": {
+  {
     "name": "SSD1306_OLED",
     "io_type": 1,
     "resolution": {
@@ -80,12 +80,20 @@
       "output": [21, 22]
     }
   },
-  "hardware_5": {
+  {
     "name": "NRF24L01",
     "io_type": 2,
     "data_pin": {
       "input": [],
-      "output": [9, 10, 11, 12, 13] 
+      "output": [9, 10, 11, 12, 13]
+    }
+  },
+  {
+    "name": "Buzzer",
+    "io_type": 1,
+    "data_pin": {
+      "input": [],
+      "output": [8]
     }
   }
-}
+]
