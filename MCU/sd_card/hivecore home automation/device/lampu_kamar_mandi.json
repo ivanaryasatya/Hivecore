@@ -1,0 +1,18 @@
+{
+    "device_id": 2000,
+    "support_wifi": false,
+    "firebase_connected": false,
+    "io_type": 1,
+    "radio": {
+      "radio_comm": true,
+      "address": "NODE3",
+      "ack": true,
+      "ack_retries": 5,
+      "ack delay": 600,
+      "data_rate": 0,
+      "channel": 100,
+      "power_level": 1,
+      "rolling_code": true
+    },
+    "command_map": {}
+}

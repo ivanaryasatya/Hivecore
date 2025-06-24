@@ -1,0 +1,22 @@
+{
+    "support_wifi": false,
+    "firebase_connected": false,
+    "io_type": 2,
+    "status": {
+        "active": true,
+        "feeding": false,
+        "in_error": false
+    },
+    "radio": {
+        "radio_comm": true,
+        "address": "NODE1",
+        "ack": true,
+        "ack_retries": 3,
+        "ack delay": 500,
+        "data_rate": 2,
+        "channel": 100,
+        "power_level": 3,
+        "rolling_code": true
+    },
+    "command_map": {}
+}

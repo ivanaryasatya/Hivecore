@@ -1,0 +1,30 @@
+{
+    "device_id": 2000,
+    "support_wifi": false,
+    "firebase_connected": false,
+    "io_type": 1,
+    "status": {
+        "active": true,
+        "on": false,
+        "in_error": false
+    },
+    "radio": {
+        "radio_comm": true,
+        "address": "NODE2",
+        "ack": false,
+        "ack_retries": 0,
+        "ack delay": 300,
+        "data_rate": 1,
+        "channel": 100,
+        "power_level": 2,
+        "rolling_code": true
+    },
+    "command_map": {
+        "turn_on": "ON",
+        "turn_off": "OFF",
+        "toggle": "TGL",
+        "status": "STS",
+        "blink": "BLK",
+        "reset": "RST"
+    }
+}

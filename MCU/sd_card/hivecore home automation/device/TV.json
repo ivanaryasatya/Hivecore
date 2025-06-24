@@ -1,0 +1,32 @@
+{
+    "device_id": 2000,
+    "support_wifi": true,
+    "firebase_connected": true,
+    "io_type": 2,
+    "status": {
+        "active": true,
+        "open": false,
+        "locked": true,
+        "in_error": false
+    },
+    "radio": {
+        "radio_comm": true,
+        "address": "DT0",
+        "ack": true,
+        "ack_retries": 3,
+        "ack delay": 500,
+        "data_rate": 2,
+        "channel": 100,
+        "power_level": 3,
+        "rolling_code": true
+    },
+    "command_map": {
+        "open_gate": "OPN",
+        "close_gate": "CLS",
+        "stop_gate": "STP",
+        "lock_gate": "LCK",
+        "unlock_gate": "ULK",
+        "status": "STS",
+        "reset": "RST"
+    }
+}
