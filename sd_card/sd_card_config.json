@@ -1,0 +1,23 @@
+{
+  "sdcard": {
+    "autoClean": true,
+    "cleanIntervalHours": 24,
+    "maxFileAgeDays": 7,
+    "excludedFiles": [
+      "config.json",
+      "important.log"
+    ]
+  },
+  "warning": {
+    "enableWarning": true,
+    "storageThresholdPercent": 90,
+    "ledPin": 13,
+    "buzzerPin": 12,
+    "serialWarning": true
+  },
+  "logging": {
+    "enableLog": true,
+    "logFile": "system.log",
+    "maxLogSizeKB": 512
+  }
+}

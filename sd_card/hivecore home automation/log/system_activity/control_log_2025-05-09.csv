@@ -1,4 +1,4 @@
-timestamp,activity
+timestamp, activity
 12:10:00, "menyalakan lamp 4, 5, 8"
 14:15:00, "mengatur jadwal perangkat"
 16:20:00, "mematikan lampu"
