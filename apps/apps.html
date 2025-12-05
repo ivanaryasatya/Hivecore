@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Smart Home — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root{
+      --bg-1: #05060a;
+      --bg-2: #0b0f1a;
+      --glass: rgba(255,255,255,0.04);
+      --accent: #6ee7b7;
+      --accent-2: #8b5cf6;
+      --muted: rgba(255,255,255,0.6);
+      --card-radius: 14px;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg-1),var(--bg-2));color:#e6eef8}
+    .app{max-width:1200px;margin:28px auto;padding:22px;}
+
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .title{display:flex;align-items:center;gap:14px}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent-2),var(--accent));display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,0.6);font-weight:800}
+    .title h1{margin:0;font-size:18px;letter-spacing:0.6px}
+    .subtitle{font-size:13px;color:var(--muted)}
+
+    .controls{display:flex;gap:12px;align-items:center}
+    .btn{background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+
+    .grid{display:grid;grid-template-columns:320px 1fr;gap:18px;margin-top:20px}
+
+    /* Sidebar cards */
+    .sidebar{display:flex;flex-direction:column;gap:14px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:var(--card-radius);border:1px solid rgba(255,255,255,0.04);backdrop-filter: blur(8px)}
+    .sensor{display:flex;align-items:center;gap:12px}
+    .sensor .icon{width:48px;height:48;border-radius:10px;background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center;font-weight:700}
+    .sensor h3{margin:0;font-size:14px}
+    .value{font-size:20px;font-weight:700}
+    .muted{color:var(--muted);font-size:13px}
+
+    /* Main area */
+    .main{display:flex;flex-direction:column;gap:14px}
+    .chart-wrapper{padding:14px;border-radius:var(--card-radius);border:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));}
+
+    .shortcuts{display:flex;gap:12px;flex-wrap:wrap}
+    .shortcut{flex:0 0 120px;padding:12px;border-radius:12px;text-align:center;cursor:pointer;border:1px solid rgba(255,255,255,0.03)}
+    .shortcut .sicon{width:36px;height:36;border-radius:8px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center}
+    .toggle{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(0,0,0,0.2)}
+
+    footer{margin-top:18px;display:flex;gap:12px;align-items:center;justify-content:space-between;color:var(--muted)}
+
+    /* responsive */
+    @media(max-width:900px){.grid{grid-template-columns:1fr;}.sidebar{flex-direction:row;overflow:auto;padding-bottom:6px}.shortcut{flex:0 0 160px}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="title">
+        <div class="logo">SH</div>
+        <div>
+          <h1>SmartHome — Dashboard</h1>
+          <div class="subtitle" id="currentTime">Memuat waktu...</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="btn" id="refreshBtn">Refresh Data</div>
+        <div class="btn" id="themeBtn">Futuristic</div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <aside class="sidebar">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div><strong>Ringkasan Sensor</strong><div class="muted">Update realtime (simulasi)</div></div>
+            <div class="muted">Status: <span id="systemStatus">Online</span></div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="sensor" style="flex-direction:column;align-items:flex-start">
+              <div style="display:flex;gap:8px;align-items:center;width:100%">
+                <div class="icon">🌡️</div>
+                <div>
+                  <h3>Temperatur</h3>
+                  <div class="value" id="tempVal">-- °C</div>
+                  <div class="muted">Sensor: DHT22</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sensor" style="flex-direction:column;align-items:flex-start">
+              <div style="display:flex;gap:8px;align-items:center;width:100%">
+                <div class="icon">💧</div>
+                <div>
+                  <h3>Kelembapan</h3>
+                  <div class="value" id="humVal">-- %</div>
+                  <div class="muted">Sensor: DHT22</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sensor" style="flex-direction:column;align-items:flex-start">
+              <div style="display:flex;gap:8px;align-items:center;width:100%">
+                <div class="icon">🔆</div>
+                <div>
+                  <h3>Cahaya</h3>
+                  <div class="value" id="luxVal">-- lx</div>
+                  <div class="muted">Sensor: BH1750</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sensor" style="flex-direction:column;align-items:flex-start">
+              <div style="display:flex;gap:8px;align-items:center;width:100%">
+                <div class="icon">🌫️</div>
+                <div>
+                  <h3>Air Quality</h3>
+                  <div class="value" id="aqVal">-- AQI</div>
+                  <div class="muted">Sensor: MQ-135</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="card">
+          <strong>Perangkat</strong>
+          <div class="muted" style="margin-top:6px;margin-bottom:10px">Kontrol cepat</div>
+
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-weight:600">Pet Feeder</div>
+                <div class="muted">Terjadwal & manual</div>
+              </div>
+              <div>
+                <button class="btn" onclick="triggerFeeder()">Berikan Makanan</button>
+              </div>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-weight:600">Pintu Otomatis</div>
+                <div class="muted">Sensor gerak & RFID</div>
+              </div>
+              <div>
+                <label class="toggle"><input type="checkbox" id="doorToggle" onchange="toggleDoor(this.checked)"/> <span id="doorState">Terkunci</span></label>
+              </div>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-weight:600">Lampu Ruang</div>
+                <div class="muted">Intensitas dan mood</div>
+              </div>
+              <div>
+                <label class="toggle"><input type="checkbox" id="lightToggle" onchange="toggleLight(this.checked)"/> <span id="lightState">Mati</span></label>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </aside>
+
+      <main class="main">
+        <div class="chart-wrapper card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <div>
+              <strong>Grafik — Temperatur & Kelembapan</strong>
+              <div class="muted">Perubahan waktu nyata (simulasi)</div>
+            </div>
+            <div class="muted">Range: 24 jam</div>
+          </div>
+          <canvas id="sensorChart" height="150"></canvas>
+        </div>
+
+        <div class="card">
+          <strong>Shortcut Cepat</strong>
+          <div class="muted" style="margin-bottom:10px">Satu sentuhan untuk tugas umum</div>
+          <div class="shortcuts">
+            <div class="shortcut" onclick="triggerFeeder()"><div class="sicon">🍽️</div><div>Feeder</div></div>
+            <div class="shortcut" onclick="toggleDoor()"><div class="sicon">🚪</div><div>Pintu</div></div>
+            <div class="shortcut" onclick="toggleLight()"><div class="sicon">💡</div><div>Lampu</div></div>
+            <div class="shortcut" onclick="activateVacuum()"><div class="sicon">🤖</div><div>Vakum</div></div>
+            <div class="shortcut" onclick="sceneNight()"><div class="sicon">🌙</div><div>Mode Malam</div></div>
+          </div>
+        </div>
+
+        <footer>
+          <div class="muted">© SmartHome • Elegan & Futuristik — Simulasi</div>
+          <div class="muted">Last sync: <span id="lastSync">-</span></div>
+        </footer>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // ===== Helper: waktu =====
+    function updateTime(){
+      const now = new Date();
+      const fmt = now.toLocaleString('id-ID', {weekday:'short',year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      document.getElementById('currentTime').textContent = fmt;
+    }
+    setInterval(updateTime,1000);updateTime();
+
+    // ===== Chart.js init =====
+    const ctx = document.getElementById('sensorChart').getContext('2d');
+    const MAX_POINTS = 30;
+    const labels = Array.from({length:MAX_POINTS}).map((_,i)=>'-');
+
+    const data = {
+      labels: labels,
+      datasets: [
+        {label:'Temperatur (°C)', data: Array(MAX_POINTS).fill(null), tension:0.3, yAxisID: 'y', borderWidth:2, pointRadius:2},
+        {label:'Kelembapan (%)', data: Array(MAX_POINTS).fill(null), tension:0.3, yAxisID: 'y1', borderWidth:2, pointRadius:2}
+      ]
+    };
+
+    const chart = new Chart(ctx,{
+      type:'line',
+      data:data,
+      options:{
+        animation:false,
+        maintainAspectRatio:false,
+        scales:{
+          x:{grid:{display:false}},
+          y:{type:'linear',position:'left',suggestedMin:15,suggestedMax:40},
+          y1:{type:'linear',position:'right',suggestedMin:10,suggestedMax:100,grid:{display:false}}
+        },
+        plugins:{legend:{labels:{color:'#d6e8ff'}}}
+      }
+    });
+
+    // ===== Simulasi sensor & update UI =====
+    function rand(min,max){return +(Math.random()*(max-min)+min).toFixed(1)}
+    let lastSync = null;
+
+    function simulateData(){
+      // Simulasi nilai
+      const temp = rand(22.0,31.0);
+      const hum = rand(30,78);
+      const lux = Math.round(rand(10,700));
+      const aqi = Math.round(rand(10,160));
+
+      // Update small cards
+      document.getElementById('tempVal').textContent = temp + ' °C';
+      document.getElementById('humVal').textContent = hum + ' %';
+      document.getElementById('luxVal').textContent = lux + ' lx';
+      document.getElementById('aqVal').textContent = aqi + ' AQI';
+
+      // Update chart
+      const label = new Date().toLocaleTimeString('id-ID');
+      pushPoint(label,temp,hum);
+
+      lastSync = new Date();
+      document.getElementById('lastSync').textContent = lastSync.toLocaleTimeString('id-ID');
+      // (In real usage: here do a fetch() to your API or open a WebSocket to receive data)
+    }
+
+    function pushPoint(label, t, h){
+      data.labels.push(label); if(data.labels.length>MAX_POINTS) data.labels.shift();
+      data.datasets[0].data.push(t); if(data.datasets[0].data.length>MAX_POINTS) data.datasets[0].data.shift();
+      data.datasets[1].data.push(h); if(data.datasets[1].data.length>MAX_POINTS) data.datasets[1].data.shift();
+      chart.update('none');
+    }
+
+    // Start with some seed values
+    for(let i=0;i<10;i++) simulateData();
+    // Update every 5 seconds (demo)
+    setInterval(simulateData,5000);
+
+    // ===== Device actions (simulasi) =====
+    function triggerFeeder(){
+      // Replace with fetch('/api/feeder/dispense', {method:'POST'}) etc.
+      alert('Perintah: Berikan makanan — terkirim (simulasi)');
+      console.log('Feeder triggered');
+    }
+
+    function toggleDoor(force){
+      const checkbox = document.getElementById('doorToggle');
+      // If called without parameter (from shortcut), flip
+      if(typeof force === 'undefined'){
+        checkbox.checked = !checkbox.checked;
+      } else checkbox.checked = !!force;
+
+      const state = checkbox.checked ? 'Terbuka' : 'Terkunci';
+      document.getElementById('doorState').textContent = state;
+      // send command to server here
+      console.log('Door state ->', state);
+    }
+
+    function toggleLight(force){
+      const checkbox = document.getElementById('lightToggle');
+      if(typeof force === 'undefined') checkbox.checked = !checkbox.checked; else checkbox.checked = !!force;
+      const state = checkbox.checked ? 'Nyala' : 'Mati';
+      document.getElementById('lightState').textContent = state;
+      console.log('Light state ->', state);
+    }
+
+    function activateVacuum(){alert('Vakum: Mulai pembersihan (simulasi)')}
+    function sceneNight(){
+      toggleLight(false); toggleDoor(false); alert('Mode Malam: Diaktifkan (simulasi)');
+    }
+
+    // ===== Small UX touches =====
+    document.getElementById('refreshBtn').addEventListener('click',()=>{simulateData();alert('Refresh sumber data (simulasi)')});
+
+    // ===== Integration notes (comment inside file) =====
+    /*
+      CATATAN INTEGRASI:
+      - Ganti fungsi simulateData() dengan panggilan ke server nyata (fetch / WebSocket).
+      - Untuk WebSocket: buka koneksi ke ws://... lalu pada pesan masukkan nilai sensornya ke pushPoint().
+      - Untuk mengirim perintah ke perangkat: gunakan fetch POST ke endpoint perangkatmu.
+      - Keamanan: lindungi endpoint dengan token API / authentication.
+    */
+
+  </script>
+</body>
+</html>
