@@ -1,0 +1,121 @@
+%% ESP32-S3 Self-Healing OTA Watchdog Algorithm (v5)
+%% Koreksi: task stuck/crash ditangani OTOMATIS oleh watchdog (TWDT/panic handler),
+%% bukan hasil evaluasi software. Klasifikasi penyebab dilakukan SETELAH restart,
+%% dibaca dari esp_reset_reason() + breadcrumb RTC memory.
+
+flowchart TD
+    Start(["Power On / Reset ESP32-S3"]) --> Bootloader["Bootloader membaca<br/>OTA Data Partition"]
+
+    Bootloader --> ReadResetReason["Baca esp_reset_reason() ESP-IDF<br/>+ breadcrumb dari RTC memory (noinit):<br/>heartbeat task terakhir, flag soft-issue,<br/>status pending_verify firmware"]
+
+    ReadResetReason --> ClassifyCause{"Klasifikasikan<br/>penyebab reset"}
+
+    ClassifyCause -->|"ESP_RST_TASK_WDT<br/>(task watchdog timeout,<br/>otomatis oleh TWDT)"| IdentifyStuckTask["Ambil dari breadcrumb:<br/>task mana yang TERAKHIR<br/>tidak sempat feed watchdog"]
+    ClassifyCause -->|"ESP_RST_PANIC /<br/>ESP_RST_INT_WDT<br/>(crash/exception, otomatis<br/>oleh panic handler)"| ReadPanicInfo["Baca backtrace/core dump<br/>(jika tersedia) untuk tahu<br/>fungsi & task penyebab crash"]
+    ClassifyCause -->|"ESP_RST_BROWNOUT"| NotePower["Catat: brownout /<br/>tegangan input drop"]
+    ClassifyCause -->|"ESP_RST_SW<br/>(restart terkontrol,<br/>dipicu app sendiri)"| ReadSoftFlag["Baca flag detail dari RTC:<br/>HEAP_CRITICAL / NETWORK_FAIL /<br/>CUSTOM_CHECK_FAIL + nilai metrik"]
+    ClassifyCause -->|"ESP_RST_POWERON /<br/>normal"| NoteNormal["Tandai: boot normal,<br/>bukan karena error"]
+
+    IdentifyStuckTask --> BuildLogEntry
+    ReadPanicInfo --> BuildLogEntry
+    NotePower --> BuildLogEntry
+    ReadSoftFlag --> BuildLogEntry
+    NoteNormal --> BuildLogEntry
+
+    BuildLogEntry["Susun catatan lengkap:<br/>penyebab + task/fungsi terkait +<br/>timestamp + versi firmware"]
+    BuildLogEntry --> IsAbnormalReset{"Penyebabnya abnormal?<br/>(bukan boot normal)"}
+
+    IsAbnormalReset -->|"Ya"| InitSD["Coba mount SD Card"]
+    InitSD --> CheckSDLog{"SD Card terdeteksi<br/>& ruang cukup?"}
+    CheckSDLog -->|"Ya"| WriteSDLog["Tulis catatan lengkap<br/>ke SD Card"]
+    CheckSDLog -->|"Tidak terdeteksi<br/>atau penuh/rusak"| WriteNVSLog["Fallback: tulis catatan<br/>ringkas ke NVS"]
+    WriteSDLog --> IncBootCount
+    WriteNVSLog --> IncBootCount
+    IsAbnormalReset -->|"Tidak, boot normal"| IncBootCount
+
+    IncBootCount["Increment 'boot_attempt_count'<br/>di NVS"] --> CheckEscalation{"boot_attempt_count > ambang<br/>batas, ATAU firmware sebelumnya<br/>PENDING_VERIFY & gagal?"}
+
+    CheckEscalation -->|"Tidak, boot normal"| CheckOTAState{"Partition aktif<br/>saat ini apa?"}
+
+    CheckEscalation -->|"Ya - perlu ganti firmware"| CheckSDFirmware{"SD Card terdeteksi<br/>& berisi file firmware?"}
+
+    CheckSDFirmware -->|"Ya"| CheckSDIndex{"Masih ada firmware di SD<br/>yang belum dicoba?<br/>(sd_fw_index < jumlah file<br/>firmware di SD)"}
+    CheckSDIndex -->|"Ya, firmware<br/>ke-N tersedia"| FlashFromSD["Flash firmware_N.bin dari SD<br/>ke partition OTA kosong<br/>Set status PENDING_VERIFY<br/>sd_fw_index++ (simpan di NVS)<br/>reset boot_attempt_count = 0"]
+    FlashFromSD --> RebootSD(["Reboot, coba<br/>firmware SD ke-N"])
+    RebootSD --> Bootloader
+
+    CheckSDIndex -->|"Tidak, semua firmware<br/>di SD sudah dicoba & gagal"| CheckOTA0Tried
+    CheckSDFirmware -->|"Tidak (SD tidak ada /<br/>tidak ada file firmware)"| CheckOTA0Tried
+
+    CheckOTA0Tried{"Firmware internal ota_0<br/>(base/bawaan chip) sudah<br/>dicoba di siklus ini & gagal?"}
+    CheckOTA0Tried -->|"Belum"| SetOTA0["Set boot partition = ota_0<br/>reset sd_fw_index = 0<br/>tandai ota0_tried = true<br/>reset boot_attempt_count = 0"]
+    SetOTA0 --> RebootOTA0(["Reboot ke<br/>firmware internal ota_0"])
+    RebootOTA0 --> Bootloader
+
+    CheckOTA0Tried -->|"Sudah, tetap gagal juga"| RecoveryMode["Masuk RECOVERY MODE:<br/>matikan app task normal,<br/>aktifkan hanya WiFi Provisioning<br/>+ OTA listener"]
+    RecoveryMode --> WaitFix["Tunggu firmware perbaikan<br/>dari admin/cloud, atau<br/>SD card diganti/ditambah"]
+    WaitFix --> OTAStart
+
+    CheckOTAState -->|"Firmware Stabil (Valid)"| BootStable["Boot Firmware Stabil"]
+    CheckOTAState -->|"Firmware Baru (Pending Verify)"| BootNew["Boot Firmware Baru<br/>Status: PENDING_VERIFY"]
+
+    BootStable --> SaveFWStatusRTC["Simpan status firmware saat ini<br/>(VALID/PENDING_VERIFY) ke RTC memory<br/>-- supaya tetap terbaca meski<br/>terjadi reset mendadak berikutnya"]
+    BootNew --> SaveFWStatusRTC
+
+    SaveFWStatusRTC --> InitApp["Inisialisasi Aplikasi<br/>& buat semua FreeRTOS Task"]
+
+    InitApp --> StartWatchdog["Buat Task 'Health Monitor'<br/>(priority tinggi)"]
+    StartWatchdog --> RegisterTasks["Daftarkan Task kritis<br/>ke Task Watchdog Timer (TWDT)"]
+    RegisterTasks --> RunTasks["Jalankan semua Task:<br/>Sensor, Network, Aktuator, dll"]
+
+    RunTasks --> MonitorLoop(("LOOP MONITORING<br/>setiap X detik"))
+    RunTasks -.->|"OTA task berjalan<br/>di background"| OTAStart
+
+    MonitorLoop --> UpdateHeartbeat["Update breadcrumb heartbeat<br/>tiap task ke RTC memory<br/>(catat task mana yang masih hidup)"]
+    UpdateHeartbeat --> FeedTWDT["Feed TWDT untuk tiap task<br/>yang heartbeat-nya masih baru<br/>(task yang stuck TIDAK ikut di-feed)"]
+
+    FeedTWDT -.->|"jika ada task stuck & tidak<br/>ter-feed sampai batas waktu"| TWDTAuto(["⚠️ TWDT trigger OTOMATIS:<br/>panic + restart<br/>(di luar alur software ini,<br/>langsung lompat ke Bootloader)"])
+
+    FeedTWDT --> CheckHeap["Cek Free Heap Memory"]
+    CheckHeap --> CheckNetwork["Cek koneksi WiFi/Network"]
+    CheckNetwork --> CheckCustom["Cek Custom Health Check<br/>(business logic, mis. data sensor<br/>tidak update terlalu lama)"]
+
+    CheckCustom --> SoftEvaluate{"Heap kritis, ATAU network<br/>gagal berkali-kali, ATAU<br/>custom check gagal?"}
+
+    SoftEvaluate -->|"Ya, kritis"| SaveSoftFlag["Simpan flag ke RTC memory:<br/>jenis (HEAP_CRITICAL/NETWORK_FAIL/<br/>CUSTOM_CHECK_FAIL) + nilai metrik"]
+    SaveSoftFlag --> ControlledRestart["esp_restart()<br/>restart terkontrol oleh app"]
+    ControlledRestart --> Reboot1(["Reboot"])
+    Reboot1 --> Bootloader
+
+    SoftEvaluate -->|"Tidak, semua<br/>dalam batas aman"| GracePeriod{"Sudah bertahan sehat<br/>selama grace period?"}
+    GracePeriod -->|"Ya"| ResetRecoveryState["Reset boot_attempt_count = 0<br/>reset sd_fw_index = 0<br/>reset ota0_tried = false"]
+    GracePeriod -->|"Belum"| SleepLoop["Sleep interval"]
+    ResetRecoveryState --> IsPending{"Status firmware<br/>PENDING_VERIFY?"}
+    IsPending -->|"Ya"| MarkValid["esp_ota_mark_app_valid_<br/>cancel_rollback()<br/>Tandai Firmware VALID"]
+    IsPending -->|"Tidak, sudah VALID"| SleepLoop
+    MarkValid --> SleepLoop
+    SleepLoop --> MonitorLoop
+
+    subgraph OTAProcess["Proses OTA Update Firmware Baru (dari Network)"]
+        direction TB
+        OTAStart(["Server kirim<br/>firmware baru"]) --> Download["Download ke<br/>partition kosong"]
+        Download --> Verify{"Checksum/Signature<br/>valid?"}
+        Verify -->|"Gagal"| AbortOTA["Batalkan OTA,<br/>tetap pakai firmware lama"]
+        Verify -->|"Berhasil"| SetBoot["Set boot partition<br/>Status: PENDING_VERIFY"]
+        SetBoot --> RebootOTA(["Reboot untuk<br/>test firmware baru"])
+    end
+
+    RebootOTA --> Bootloader
+    AbortOTA --> MonitorLoop
+    TWDTAuto --> Bootloader
+
+    style MarkValid fill:#2e7d32,color:#fff
+    style ResetRecoveryState fill:#2e7d32,color:#fff
+    style WriteSDLog fill:#1565c0,color:#fff
+    style WriteNVSLog fill:#0277bd,color:#fff
+    style FlashFromSD fill:#00695c,color:#fff
+    style SetOTA0 fill:#f9a825,color:#000
+    style RecoveryMode fill:#6a1b9a,color:#fff
+    style TWDTAuto fill:#e65100,color:#fff
+    style ControlledRestart fill:#ef6c00,color:#fff
+    style CheckEscalation fill:#ff6f00,color:#fff

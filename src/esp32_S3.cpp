@@ -1,5 +1,7 @@
 #include <WiFi.h>
 #include <Firebase_ESP_Client.h>
+#include <Arduino.h>
+#include <ArduinoJson.h>
 
 // Provide the token generation process info.
 #include <addons/TokenHelper.h>
@@ -17,7 +19,6 @@
 #define USER_EMAIL "YOUR_USER_EMAIL"
 #define USER_PASSWORD "YOUR_USER_PASSWORD"
 
-// Define Firebase Data object
 FirebaseData fbdo;
 FirebaseAuth auth;
 FirebaseConfig config;

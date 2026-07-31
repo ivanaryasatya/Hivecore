@@ -1,0 +1,6 @@
+graph TD
+    A[Input Data] -->|Garis dengan Teks| B{Apakah Valid?}
+    B -- Ya --> C[Simpan ke Database]
+    B -- Tidak --> D[Tampilkan Error]
+    C -. Garis Putus-putus .-> E[Kirim Email]
+    D ==>|Garis Tebal| F[Selesai]

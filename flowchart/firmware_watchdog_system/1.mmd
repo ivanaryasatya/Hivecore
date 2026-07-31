@@ -1,0 +1,50 @@
+flowchart TD
+    %% 1. BOOT & INITIALIZATION
+    subgraph BOOT ["1. Boot & Inisialisasi Sistem"]
+        A([ESP32-S3 Start / Reboot]) --> B[Baca Status Partisi OTA & Crash Counter]
+        B --> C[Jalankan Semua Worker Tasks<br>Sensor, WiFi, MQTT, UI, dll.]
+        C --> D[Jalankan Smart Supervisor Task<br>& Register FreeRTOS Watchdog TWDT]
+    end
+
+    %% 2. INFINITE MONITORING LOOP (24/7)
+    subgraph MONITOR ["2. Continuous Periodic Monitoring Loop (24/7)"]
+        D --> E["Tunggu Interval Pengecekan<br>(Contoh: Setiap 5 Detik)"]
+        E --> F["Periksa Heartbeat Flag Semua Task<br>(Apakah ada yang Stuck/Deadlock?)"]
+        F --> G{Semua Task Normal<br>& Tepat Waktu?}
+        
+        %% JIKA NORMAL (LOOPING TERUS)
+        G -->|Ya, Normal| H{Apakah Status OTA masih<br>PENDING_VERIFY?}
+        H -->|Ya| I{Apakah Sudah Melewati<br>Masa Uji Coba?}
+        I -->|Belum| E
+        I -->|Sudah Stabil!| J["Kunci Firmware: esp_ota_mark_app_valid()<br>Reset Crash Counter = 0"]
+        J --> E
+        H -->|Tidak, Sudah Valid<br>Operasi Normal 24/7| E
+    end
+
+    %% 3. SELF-HEALING & ROLLBACK DECISION
+    subgraph HEALING ["3. Smart Self-Healing & Rollback Engine"]
+        %% JIKA ADA TASK BERMASALAH
+        G -->|Tidak! Ada Task Stuck / Crash| K[Catat Log Error ke NVS / RTC<br>& Naikkan Crash Counter]
+        
+        K --> L{Apakah Status OTA masih<br>PENDING_VERIFY?}
+        
+        %% SKENARIO DALAM MASA UJI COBA OTA
+        L -->|Ya, Dalam Masa Uji Coba| M{Crash Counter >= MAX_RETRIES?<br>Contoh: >= 3 Kali}
+        M -->|Belum >= 3| N["Self-Healing: Restart Task<br>atau Soft Reboot ESP32"]
+        N --> A
+        M -->|Ya >= 3, Firmware Cacat| O["Rollback: esp_ota_mark_app_invalid()<br>Reboot ke Firmware Lama"]
+        O --> P([ESP32 Berjalan Normal<br>dengan Firmware Stabil Sebelumnya])
+        
+        %% SKENARIO OPERASI NORMAL 24/7 (SUDAH VALID)
+        L -->|Tidak, Firmware Sudah Valid| Q["Self-Healing 24/7:<br>1. Coba Restart Task Bermasalah<br>2. Jika Gagal, Re-init Peripheral/WiFi<br>3. Terakhir, Controlled Soft Reboot"]
+        Q --> E
+    end
+
+    %% STYLING
+    style E fill:#3B82F6,stroke:#2563EB,color:#fff
+    style F fill:#3B82F6,stroke:#2563EB,color:#fff
+    style J fill:#10B981,stroke:#059669,color:#fff
+    style P fill:#10B981,stroke:#059669,color:#fff
+    style O fill:#EF4444,stroke:#DC2626,color:#fff
+    style Q fill:#F59E0B,stroke:#D97706,color:#fff
+    style N fill:#F59E0B,stroke:#D97706,color:#fff

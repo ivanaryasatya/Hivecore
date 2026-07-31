@@ -1,0 +1,11 @@
+graph TD
+    %% Ini adalah komentar
+    Start([Mulai]) --> Input[Input Username & Password]
+    Input --> CheckDB[(Cek ke Database)]
+    CheckDB --> Decision{Apakah Cocok?}
+    
+    Decision -- Ya --> Dashboard[Masuk ke Dashboard]
+    Decision -- Tidak --> Alert[Tampilkan Pesan Error]
+    
+    Alert --> Input
+    Dashboard --> End([Selesai])
